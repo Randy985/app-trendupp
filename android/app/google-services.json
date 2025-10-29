@@ -1,0 +1,90 @@
+{
+  "project_info": {
+    "project_number": "865332862927",
+    "project_id": "trendup-c5c2e",
+    "storage_bucket": "trendup-c5c2e.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:865332862927:android:5e20962bdc401a55f13cba",
+        "android_client_info": {
+          "package_name": "com.neositetech.trendup"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "865332862927-p512aqbblr8r2g3n6ankolpt3hvcaa0r.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCojvtNurtxZ6baW8eLoFKxr19OzOaePCk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "865332862927-p512aqbblr8r2g3n6ankolpt3hvcaa0r.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "865332862927-nna0ljcdsl4mtbgle1r7mjve0agict7i.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.neositetech.trendup.trendupApp"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:865332862927:android:836b4393c23c27cdf13cba",
+        "android_client_info": {
+          "package_name": "com.neositetech.trendup.trendup_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "865332862927-49balts5654nhpr6d7ioq3d24c2nc7s7.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.neositetech.trendup.trendup_app",
+            "certificate_hash": "ad9367056449dc2b8f2d8556d0d8e3d4307c298e"
+          }
+        },
+        {
+          "client_id": "865332862927-p512aqbblr8r2g3n6ankolpt3hvcaa0r.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCojvtNurtxZ6baW8eLoFKxr19OzOaePCk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "865332862927-p512aqbblr8r2g3n6ankolpt3hvcaa0r.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "865332862927-nna0ljcdsl4mtbgle1r7mjve0agict7i.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.neositetech.trendup.trendupApp"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
