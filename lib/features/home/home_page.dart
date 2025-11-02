@@ -3,7 +3,6 @@ import 'package:provider/provider.dart';
 import 'controllers/home_controller.dart';
 import 'pages/home_view.dart';
 import 'pages/saved_view.dart';
-import 'pages/generate_view.dart';
 import 'pages/profile_view.dart';
 import 'widgets/bottom_nav_bar.dart';
 
@@ -19,7 +18,6 @@ class HomePage extends StatelessWidget {
           final pages = [
             const HomeView(),
             const SavedView(),
-            const GenerateView(),
             const ProfileView(),
           ];
 

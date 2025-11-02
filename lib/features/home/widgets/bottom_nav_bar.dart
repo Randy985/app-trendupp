@@ -15,14 +15,14 @@ class CustomBottomNav extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       height: 70,
-      margin: const EdgeInsets.symmetric(horizontal: 24, vertical: 10),
+      margin: const EdgeInsets.symmetric(horizontal: 22, vertical: 10),
       decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.25),
+        color: Colors.white.withOpacity(0.6),
         borderRadius: BorderRadius.circular(30),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.1),
-            blurRadius: 10,
+            color: Colors.black.withOpacity(0.08),
+            blurRadius: 12,
             offset: const Offset(0, 4),
           ),
         ],
@@ -35,42 +35,25 @@ class CustomBottomNav extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               _NavItem(
+                index: 0,
+                currentIndex: currentIndex,
                 icon: Icons.home_rounded,
                 label: 'Inicio',
-                isSelected: currentIndex == 0,
-                onTap: () => onTap(0),
+                onTap: onTap,
               ),
               _NavItem(
+                index: 1,
+                currentIndex: currentIndex,
                 icon: Icons.bookmark_rounded,
                 label: 'Guardadas',
-                isSelected: currentIndex == 1,
-                onTap: () => onTap(1),
-              ),
-              GestureDetector(
-                onTap: () => onTap(2),
-                child: Container(
-                  height: 58,
-                  width: 58,
-                  decoration: const BoxDecoration(
-                    shape: BoxShape.circle,
-                    gradient: LinearGradient(
-                      colors: [Color(0xFF6A11CB), Color(0xFF2575FC)],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                    ),
-                  ),
-                  child: const Icon(
-                    Icons.auto_awesome_rounded,
-                    color: Colors.white,
-                    size: 32,
-                  ),
-                ),
+                onTap: onTap,
               ),
               _NavItem(
+                index: 2,
+                currentIndex: currentIndex,
                 icon: Icons.person_rounded,
                 label: 'Perfil',
-                isSelected: currentIndex == 3,
-                onTap: () => onTap(3),
+                onTap: onTap,
               ),
             ],
           ),
@@ -81,37 +64,56 @@ class CustomBottomNav extends StatelessWidget {
 }
 
 class _NavItem extends StatelessWidget {
+  final int index;
+  final int currentIndex;
   final IconData icon;
   final String label;
-  final bool isSelected;
-  final VoidCallback onTap;
+  final ValueChanged<int> onTap;
 
   const _NavItem({
+    required this.index,
+    required this.currentIndex,
     required this.icon,
     required this.label,
-    required this.isSelected,
     required this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
-    final color = isSelected ? const Color(0xFF6A11CB) : Colors.black54;
+    final bool isSelected = currentIndex == index;
+
     return GestureDetector(
-      onTap: onTap,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(icon, color: color),
-          const SizedBox(height: 2),
-          Text(
-            label,
-            style: TextStyle(
-              fontSize: 12,
-              color: color,
-              fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+      onTap: () => onTap(index),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 250),
+        curve: Curves.easeInOut,
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        decoration: BoxDecoration(
+          color: isSelected
+              ? Colors.black.withOpacity(0.08)
+              : Colors.transparent,
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              icon,
+              size: isSelected ? 26 : 24,
+              color: isSelected ? Colors.black87 : Colors.black54,
             ),
-          ),
-        ],
+            const SizedBox(height: 4),
+            AnimatedDefaultTextStyle(
+              duration: const Duration(milliseconds: 200),
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
+                color: isSelected ? Colors.black87 : Colors.black54,
+              ),
+              child: Text(label),
+            ),
+          ],
+        ),
       ),
     );
   }
