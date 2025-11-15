@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:trendup_app/services/ads/ads_service.dart';
+import 'package:trendup_app/widgets/app_background.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
@@ -52,6 +54,9 @@ class _HomeViewState extends State<HomeView>
   }
 
   void _generateIdea() {
+    // Contar idea para anuncios
+    AdsService.instance.onIdeaGenerated();
+
     String topic = _topicCtrl.text.trim();
 
     if (topic.isEmpty) {
@@ -78,80 +83,34 @@ class _HomeViewState extends State<HomeView>
     final size = MediaQuery.of(context).size;
 
     return Scaffold(
-      body: Stack(
-        children: [
-          // Fondo con ondas suaves
-          Container(
-            width: double.infinity,
-            height: double.infinity,
-            decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                colors: [Color(0xFFF9FAFB), Color(0xFFEAEAFB)],
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-              ),
-            ),
-          ),
-          // Círculos difuminados (efecto ondas suaves)
-          Positioned(
-            top: -60,
-            left: -60,
-            child: _blurCircle(
-              200,
-              const Color(0xFF6A11CB).withValues(alpha: 0.2),
-            ),
-          ),
-          Positioned(
-            bottom: -80,
-            right: -40,
-            child: _blurCircle(
-              250,
-              const Color(0xFFFF5E9C).withValues(alpha: 0.2),
-            ),
-          ),
-          // Contenido principal
-          SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 30),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  FadeTransition(
-                    opacity: _fadeAnim,
-                    child: const Text(
-                      "✨ Inspírate con una idea nueva",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.w700,
-                        color: Colors.black87,
-                      ),
-                    ),
+      body: AppBackground(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 30),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              FadeTransition(
+                opacity: _fadeAnim,
+                child: const Text(
+                  "✨ Inspírate con una idea nueva",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.w700,
+                    color: Colors.black87,
                   ),
-                  const SizedBox(height: 30),
-                  _buildTextField(),
-                  const SizedBox(height: 20),
-                  _buildCategoryWrap(),
-                  const Spacer(),
-                  _buildGenerateButton(size),
-                  const SizedBox(height: 40),
-                ],
+                ),
               ),
-            ),
+              const SizedBox(height: 30),
+              _buildTextField(),
+              const SizedBox(height: 20),
+              _buildCategoryWrap(),
+              const Spacer(),
+              _buildGenerateButton(size),
+              const SizedBox(height: 40),
+            ],
           ),
-        ],
-      ),
-    );
-  }
-
-  Widget _blurCircle(double size, Color color) {
-    return Container(
-      width: size,
-      height: size,
-      decoration: BoxDecoration(
-        color: color,
-        shape: BoxShape.circle,
-        boxShadow: [BoxShadow(color: color, blurRadius: 120, spreadRadius: 60)],
+        ),
       ),
     );
   }

@@ -39,6 +39,14 @@ class AuthService {
     );
   }
 
+  Future<void> updateUserPhoto(String photoUrl) async {
+    final user = _auth.currentUser;
+    if (user == null) return;
+
+    await user.updatePhotoURL(photoUrl);
+    await user.reload();
+  }
+
   Future<void> signOut() async {
     await _googleSignIn.signOut();
     await _auth.signOut();

@@ -63,4 +63,10 @@ class FirestoreService {
         .doc(id)
         .delete();
   }
+
+  Future<void> updateUserPhoto(String uid, String photoUrl) async {
+    await _db.collection('users').doc(uid).set({
+      'photo': photoUrl,
+    }, SetOptions(merge: true));
+  }
 }

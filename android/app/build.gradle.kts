@@ -47,7 +47,7 @@ flutter {
 }
 
 dependencies {
-    implementation "androidx.activity:activity:1.9.0"
-    implementation "androidx.fragment:fragment:1.6.2"
+    implementation("androidx.activity:activity:1.9.0")
+    implementation("androidx.fragment:fragment:1.6.2")
 }
 

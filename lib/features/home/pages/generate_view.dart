@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:trendup_app/services/firebase/firestore_service.dart';
 import '../../../services/firebase/functions_service.dart';
+import 'package:trendup_app/services/ads/ads_service.dart';
+import 'package:trendup_app/widgets/app_background.dart';
 
 class GenerateView extends StatefulWidget {
   const GenerateView({super.key});
@@ -83,10 +85,10 @@ class _GenerateViewState extends State<GenerateView> {
     final size = MediaQuery.of(context).size;
 
     return Scaffold(
-      backgroundColor: Colors.grey[100],
+      extendBodyBehindAppBar: true,
       appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 1,
+        backgroundColor: Colors.transparent,
+        elevation: 0,
         centerTitle: true,
         title: Text(
           'Idea para: $topic',
@@ -96,11 +98,13 @@ class _GenerateViewState extends State<GenerateView> {
           ),
         ),
       ),
-      body: _loading
-          ? _buildLoading(size)
-          : _idea.isEmpty
-          ? _buildEmptyState()
-          : _buildIdeaContent(context),
+      body: AppBackground(
+        child: _loading
+            ? _buildLoading(size)
+            : _idea.isEmpty
+            ? _buildEmptyState()
+            : _buildIdeaContent(context),
+      ),
     );
   }
 
@@ -211,12 +215,11 @@ class _GenerateViewState extends State<GenerateView> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        _actionButton(
-          Icons.refresh_rounded,
-          "Nueva idea",
-          _newIdea,
-          Colors.indigoAccent,
-        ),
+        _actionButton(Icons.refresh_rounded, "Nueva idea", () {
+          AdsService.instance.onIdeaGenerated();
+          _newIdea();
+        }, Colors.indigoAccent),
+
         _actionButton(Icons.bookmark_border_rounded, "Guardar", () async {
           final topic =
               ModalRoute.of(context)?.settings.arguments as String? ??

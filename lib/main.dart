@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'firebase_options.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'features/onboarding/controllers/onboarding_controller.dart';
@@ -11,6 +12,10 @@ import 'features/home/pages/generate_view.dart'; // 🔹 agrega esto
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+
+  // Publicidad
+  // await AppLovinService.instance.initialize();
+  await MobileAds.instance.initialize();
 
   final user = FirebaseAuth.instance.currentUser;
   final onboarding = OnboardingController();
