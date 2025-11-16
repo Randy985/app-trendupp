@@ -4,6 +4,7 @@ import 'package:trendup_app/services/firebase/firestore_service.dart';
 import '../../../services/firebase/functions_service.dart';
 import 'package:trendup_app/services/ads/ads_service.dart';
 import 'package:trendup_app/widgets/app_background.dart';
+import 'package:flutter/services.dart';
 
 class GenerateView extends StatefulWidget {
   const GenerateView({super.key});
@@ -114,13 +115,18 @@ class _GenerateViewState extends State<GenerateView> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Lottie.asset(
-            'assets/lottie/ai_loading.json',
-            width: size.width * 0.45,
+            'assets/lottie/loading_paperplane.json',
+            width: size.width * 0.80,
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 28),
           const Text(
             "Generando idea con IA...",
-            style: TextStyle(color: Colors.black54, fontSize: 16),
+            style: TextStyle(
+              color: Colors.black87,
+              fontSize: 18,
+              fontWeight: FontWeight.w500,
+              letterSpacing: 0.4,
+            ),
           ),
         ],
       ),
@@ -152,12 +158,15 @@ class _GenerateViewState extends State<GenerateView> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     _section(Icons.movie_filter_rounded, "Idea", _idea["idea"]),
+                    _softDivider(),
                     _section(
                       Icons.lightbulb_outline_rounded,
                       "Qué hacer",
                       _idea["descripcion"],
                     ),
+                    _softDivider(),
                     _section(Icons.tag_rounded, "Hashtags", _idea["hashtags"]),
+                    _softDivider(),
                     _section(
                       Icons.music_note_rounded,
                       "Música",
@@ -195,6 +204,24 @@ class _GenerateViewState extends State<GenerateView> {
                   color: Colors.black87,
                 ),
               ),
+
+              // BOTÓN COPIAR SOLO PARA HASHTAGS
+              if (title == "Hashtags") ...[
+                const SizedBox(width: 8),
+                GestureDetector(
+                  onTap: () {
+                    Clipboard.setData(ClipboardData(text: text));
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text("Hashtags copiados")),
+                    );
+                  },
+                  child: const Icon(
+                    Icons.copy_rounded,
+                    size: 18,
+                    color: Colors.black54,
+                  ),
+                ),
+              ],
             ],
           ),
           const SizedBox(height: 8),
@@ -284,6 +311,14 @@ class _GenerateViewState extends State<GenerateView> {
         "Sin resultado",
         style: TextStyle(fontSize: 16, color: Colors.black54),
       ),
+    );
+  }
+
+  Widget _softDivider() {
+    return Container(
+      margin: const EdgeInsets.only(top: 6, bottom: 12),
+      height: 1,
+      color: Colors.black12,
     );
   }
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 import 'package:trendup_app/services/ads/ads_service.dart';
 import 'package:trendup_app/widgets/app_background.dart';
 
@@ -31,8 +32,12 @@ class _HomeViewState extends State<HomeView>
     "✈️ Viajes",
     "🎬 Cine",
     "📚 Educación",
-    "🕹️ Gaming",
     "🤯 Curiosidades",
+    "🐶 Mascotas",
+    "🏡 Vida diaria",
+    "🛒 Recomendaciones",
+    "😮 Storytime",
+    "🤑 Emprendimiento",
   ];
 
   @override
@@ -107,7 +112,7 @@ class _HomeViewState extends State<HomeView>
               _buildCategoryWrap(),
               const Spacer(),
               _buildGenerateButton(size),
-              const SizedBox(height: 40),
+              const SizedBox(height: 30),
             ],
           ),
         ),
@@ -116,26 +121,40 @@ class _HomeViewState extends State<HomeView>
   }
 
   Widget _buildTextField() {
-    return TextField(
-      controller: _topicCtrl,
-      textAlignVertical: TextAlignVertical.center,
-      decoration: InputDecoration(
-        hintText: "Escribe tu tema o elige una categoría",
-        hintStyle: const TextStyle(color: Colors.black45),
-        prefixIcon: const Icon(Icons.lightbulb_outline, color: Colors.indigo),
-        filled: true,
-        fillColor: Colors.white,
-        contentPadding: const EdgeInsets.symmetric(
-          vertical: 16,
-          horizontal: 16,
-        ),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(16),
-          borderSide: const BorderSide(color: Colors.black12),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(16),
-          borderSide: const BorderSide(color: Colors.indigo, width: 1.4),
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(color: Colors.black12, blurRadius: 6, offset: Offset(0, 2)),
+        ],
+      ),
+      child: TextField(
+        controller: _topicCtrl,
+        textAlignVertical: TextAlignVertical.center,
+        decoration: InputDecoration(
+          hintText: "Escribe tu tema o elige una categoría",
+          hintStyle: const TextStyle(color: Colors.black45),
+
+          prefixIconConstraints: const BoxConstraints(
+            minWidth: 38,
+            minHeight: 38,
+            maxWidth: 38,
+            maxHeight: 38,
+          ),
+          prefixIcon: Lottie.asset(
+            'assets/lottie/Idea.json',
+            fit: BoxFit.contain,
+          ),
+
+          border: InputBorder.none,
+          focusedBorder: InputBorder.none,
+          enabledBorder: InputBorder.none,
+
+          contentPadding: const EdgeInsets.symmetric(
+            vertical: 16,
+            horizontal: 16,
+          ),
         ),
       ),
     );
@@ -159,15 +178,17 @@ class _HomeViewState extends State<HomeView>
                   : '';
             });
           },
+          labelPadding: const EdgeInsets.only(left: 4, right: 4),
+
           labelStyle: TextStyle(
-            color: isSelected ? Colors.white : Colors.black87,
+            color: isSelected ? Colors.grey[800] : Colors.grey[800],
             fontWeight: FontWeight.w500,
           ),
+          checkmarkColor: Colors.grey[800],
+
           backgroundColor: Colors.white,
-          selectedColor: Colors.indigoAccent.withValues(alpha: 0.85),
-          side: BorderSide(
-            color: isSelected ? Colors.indigoAccent : Colors.black12,
-          ),
+          selectedColor: const Color(0xFFFFBE5D),
+          side: const BorderSide(color: Color(0xFFFFBE5D)),
         );
       }).toList(),
     );
@@ -177,22 +198,62 @@ class _HomeViewState extends State<HomeView>
     return SizedBox(
       width: size.width,
       height: 56,
-      child: ElevatedButton.icon(
-        onPressed: _generateIdea,
-        style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.indigoAccent,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(28),
+      child: Container(
+        decoration: BoxDecoration(
+          gradient: const LinearGradient(
+            begin: Alignment.centerLeft,
+            end: Alignment.centerRight,
+            colors: [Color(0xFF5F8CFF), Color(0xFF7B7EFF), Color(0xFF9B6CFF)],
           ),
-          elevation: 4,
+          borderRadius: BorderRadius.circular(28),
+          boxShadow: const [
+            BoxShadow(
+              color: Colors.black12,
+              blurRadius: 10,
+              offset: Offset(0, 4),
+            ),
+          ],
         ),
-        icon: const Icon(Icons.auto_awesome_rounded, color: Colors.white),
-        label: const Text(
-          "Generar idea con IA",
-          style: TextStyle(
-            fontSize: 17,
-            fontWeight: FontWeight.w600,
-            color: Colors.white,
+        child: ElevatedButton(
+          onPressed: _generateIdea,
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.transparent,
+            shadowColor: Colors.transparent,
+            elevation: 0,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(28),
+            ),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SizedBox(
+                  width: 35,
+                  height: 35,
+                  child: Lottie.asset(
+                    'assets/lottie/chatbot_animation.json',
+                    fit: BoxFit.contain,
+                    delegates: LottieDelegates(
+                      values: [
+                        ValueDelegate.color(['**'], value: Color(0xFFF8F9FF)),
+                      ],
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 6),
+                const Text(
+                  "Generar idea con IA",
+                  style: TextStyle(
+                    fontSize: 17,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.white,
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),

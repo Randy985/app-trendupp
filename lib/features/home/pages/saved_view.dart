@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../../services/firebase/firestore_service.dart';
 import 'package:intl/intl.dart';
 import 'package:trendup_app/widgets/app_background.dart';
+import 'package:flutter/services.dart';
 
 class SavedView extends StatelessWidget {
   const SavedView({super.key});
@@ -141,14 +142,29 @@ class SavedView extends StatelessWidget {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              if (data['idea'] != null)
-                                _section("🎬 Idea", data['idea']),
-                              if (data['descripcion'] != null)
-                                _section("📹 Qué hacer", data['descripcion']),
-                              if (data['hashtags'] != null)
-                                _section("🔖 Hashtags", data['hashtags']),
+                              if (data['idea'] != null) ...[
+                                _section(context, "🎬 Idea", data['idea']),
+                                _softDivider(),
+                              ],
+                              if (data['descripcion'] != null) ...[
+                                _section(
+                                  context,
+                                  "📹 Qué hacer",
+                                  data['descripcion'],
+                                ),
+                                _softDivider(),
+                              ],
+                              if (data['hashtags'] != null) ...[
+                                _section(
+                                  context,
+                                  "🔖 Hashtags",
+                                  data['hashtags'],
+                                ),
+                                _softDivider(),
+                              ],
                               if (data['musica'] != null)
-                                _section("🎵 Música", data['musica']),
+                                _section(context, "🎵 Música", data['musica']),
+
                               const SizedBox(height: 10),
                             ],
                           ),
@@ -165,18 +181,41 @@ class SavedView extends StatelessWidget {
     );
   }
 
-  Widget _section(String title, String text) {
+  Widget _section(BuildContext context, String title, String text) {
+    final isHashtags = title.contains("Hashtags");
+
     return Padding(
-      padding: const EdgeInsets.only(bottom: 8),
+      padding: const EdgeInsets.only(bottom: 14),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            title,
-            style: const TextStyle(
-              fontWeight: FontWeight.w600,
-              color: Color(0xFF6A11CB),
-            ),
+          Row(
+            children: [
+              Text(
+                title,
+                style: const TextStyle(
+                  fontWeight: FontWeight.w600,
+                  color: Color(0xFF6A11CB),
+                ),
+              ),
+
+              if (isHashtags) ...[
+                const SizedBox(width: 8),
+                GestureDetector(
+                  onTap: () {
+                    Clipboard.setData(ClipboardData(text: text));
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Hashtags copiados')),
+                    );
+                  },
+                  child: const Icon(
+                    Icons.copy_rounded,
+                    size: 18,
+                    color: Colors.black54,
+                  ),
+                ),
+              ],
+            ],
           ),
           const SizedBox(height: 4),
           Text(
@@ -189,6 +228,14 @@ class SavedView extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+
+  Widget _softDivider() {
+    return Container(
+      margin: const EdgeInsets.only(top: 6, bottom: 12),
+      height: 1,
+      color: Colors.black12,
     );
   }
 }
