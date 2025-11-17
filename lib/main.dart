@@ -42,7 +42,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'TrendUp',
+      title: 'trendup',
       theme: ThemeData(useMaterial3: true),
       initialRoute: initialRoute,
       routes: {

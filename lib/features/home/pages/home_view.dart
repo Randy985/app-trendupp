@@ -89,32 +89,47 @@ class _HomeViewState extends State<HomeView>
 
     return Scaffold(
       body: AppBackground(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 30),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              FadeTransition(
-                opacity: _fadeAnim,
-                child: const Text(
-                  "✨ Inspírate con una idea nueva",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.w700,
-                    color: Colors.black87,
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            return SingleChildScrollView(
+              physics: const BouncingScrollPhysics(),
+              child: ConstrainedBox(
+                constraints: BoxConstraints(minHeight: constraints.maxHeight),
+                child: IntrinsicHeight(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 24,
+                      vertical: 30,
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        FadeTransition(
+                          opacity: _fadeAnim,
+                          child: const Text(
+                            "✨ Inspírate con una idea nueva",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: 24,
+                              fontWeight: FontWeight.w700,
+                              color: Colors.black87,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 30),
+                        _buildTextField(),
+                        const SizedBox(height: 20),
+                        _buildCategoryWrap(),
+                        const Spacer(),
+                        _buildGenerateButton(size),
+                        const SizedBox(height: 30),
+                      ],
+                    ),
                   ),
                 ),
               ),
-              const SizedBox(height: 30),
-              _buildTextField(),
-              const SizedBox(height: 20),
-              _buildCategoryWrap(),
-              const Spacer(),
-              _buildGenerateButton(size),
-              const SizedBox(height: 30),
-            ],
-          ),
+            );
+          },
         ),
       ),
     );
