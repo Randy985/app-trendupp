@@ -8,7 +8,12 @@ class AdsService {
   static final AdsService instance = AdsService._();
 
   final String bannerTestId = "ca-app-pub-3940256099942544/6300978111";
-  final String interstitialTestId = "ca-app-pub-3940256099942544/1033173712";
+
+  // Test
+  // final String interstitialTestId = "ca-app-pub-3940256099942544/1033173712";
+
+  // Banner produccion
+  final String interstitialTestId = "ca-app-pub-3268477465305430/5152731271";
 
   InterstitialAd? _interstitial;
   int _ideaCount = 0;

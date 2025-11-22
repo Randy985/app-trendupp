@@ -22,17 +22,23 @@ class _EmailLoginPageState extends State<EmailLoginPage> {
 
   Future<void> _submit() async {
     if (!_formKey.currentState!.validate()) return;
+
     setState(() => _loading = true);
+
+    final email = _emailCtrl.text.trim();
+    final pass = _passCtrl.text.trim();
+
     try {
-      final email = _emailCtrl.text.trim();
-      final pass = _passCtrl.text.trim();
       final cred = _isLogin
           ? await authService.loginWithEmail(email, pass)
           : await authService.registerWithEmail(email, pass);
 
       await firestoreService.saveUser(cred.user!);
-      if (mounted) context.go('/home');
+
+      if (!mounted) return;
+      context.go('/home');
     } catch (e) {
+      if (!mounted) return;
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(SnackBar(content: Text('Error: $e')));
@@ -108,10 +114,13 @@ class _EmailLoginPageState extends State<EmailLoginPage> {
                     const Divider(height: 40),
                     ElevatedButton.icon(
                       onPressed: () async {
+                        final navigator = GoRouter.of(context);
+
                         final userCred = await authService.signInWithGoogle();
                         if (userCred != null) {
                           await firestoreService.saveUser(userCred.user!);
-                          if (mounted) context.go('/home');
+                          if (!mounted) return;
+                          navigator.go('/home');
                         }
                       },
                       style: ElevatedButton.styleFrom(

@@ -7,7 +7,7 @@ import 'features/onboarding/controllers/onboarding_controller.dart';
 import 'features/onboarding/pages/onboarding_page.dart';
 import 'features/auth/pages/login_page.dart';
 import 'features/home/home_page.dart';
-import 'features/home/pages/generate_view.dart'; // 🔹 agrega esto
+import 'features/home/pages/generate_view.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -49,7 +49,7 @@ class MyApp extends StatelessWidget {
         '/': (context) => const OnboardingPage(),
         '/login': (context) => const LoginPage(),
         '/home': (context) => const HomePage(),
-        '/generate': (context) => const GenerateView(), // 🔹 esta línea nueva
+        '/generate': (context) => const GenerateView(),
       },
     );
   }

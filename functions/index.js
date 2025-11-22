@@ -4,60 +4,71 @@ const axios = require("axios");
 
 const openaiKey = defineSecret("OPENAI_KEY");
 
+const USER_PROMPT = (topic) => `
+Genera una idea viral y muy fácil de entender para un video sobre: "${topic}".
+Usa lenguaje totalmente simple, natural y latino. 
+No uses palabras técnicas, no uses términos de cine, no uses palabras como: plano, escena, transición, toma, cámara fija, corte, slow motion, efectos, profesional, técnico, dramatizado, teatral, over the top.
+
+La idea debe sonar como algo que un amigo le diría a otro.
+
+Reglas:
+• Idea corta y directa.
+• Máximo 3-4 pasos fáciles.
+• Que sea divertida o sorprendente.
+• Que cualquier persona la pueda grabar en su casa.
+• Hashtags latinos actuales.
+• Música: solo describe el estilo, nada más.
+
+Formato EXACTO:
+
+🎬 Idea:
+📹 Qué hacer (paso a paso):
+🔖 Hashtags recomendados:
+🎵 Música sugerida:
+`;
+
 exports.generateIdea = onCall({ secrets: [openaiKey] }, async (request) => {
-    const data = request.data;
-    const topic =
-        typeof data === "string"
-            ? data
-            : data?.topic || data?.text || data?.prompt || null;
+  const data = request.data;
 
-    console.log("📩 Datos recibidos:", data);
-    console.log("📌 Tópico detectado:", topic);
+  const topic =
+    typeof data === "string"
+      ? data
+      : data?.topic || data?.text || data?.prompt || null;
 
-    if (!topic || topic.trim() === "") {
-        throw new Error("Topic missing");
-    }
+  if (!topic || topic.trim() === "") {
+    throw new Error("Topic missing");
+  }
 
-    try {
-        const response = await axios.post(
-            "https://api.openai.com/v1/chat/completions",
-            {
-                model: "gpt-5-mini",
-                messages: [
-                    {
-                        role: "system",
-                        content:
-                            "Eres un generador de ideas creativas para videos virales en TikTok, Reels o Shorts.",
-                    },
-                    {
-                        role: "user",
-                        content: `Genera una idea original, divertida y viral para un video corto sobre el tema: "${topic}".
-            El contenido debe ser fácil de grabar con un teléfono, atractivo en los primeros segundos y tener un toque emocional o cómico.
+  try {
+    const response = await axios.post(
+      "https://api.openai.com/v1/chat/completions",
+      {
+        model: "gpt-5-mini",
+        messages: [
+          {
+            role: "system",
+            content:
+              "Generas ideas virales claras, atractivas y fáciles de grabar para TikTok, Reels y Shorts.",
+          },
+          {
+            role: "user",
+            content: USER_PROMPT(topic),
+          },
+        ],
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${openaiKey.value()}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
 
-            Responde exactamente con el siguiente formato:
+    const text =
+      response.data?.choices?.[0]?.message?.content || "Sin respuesta";
 
-            🎬 Idea:
-            📹 Qué hacer (paso a paso):
-            🔖 Hashtags recomendados:
-            🎵 Música sugerida (popular o con buen ritmo para reels/tiktok):
-            `
-                    }
-
-                ],
-            },
-            {
-                headers: {
-                    Authorization: `Bearer ${openaiKey.value()}`,
-                    "Content-Type": "application/json",
-                },
-            }
-        );
-
-        const text = response.data.choices?.[0]?.message?.content || "Sin respuesta";
-        console.log("✅ Respuesta OpenAI:", text);
-        return { result: text };
-    } catch (error) {
-        console.error("🔥 Error:", error.response?.data || error);
-        throw new Error("Error generando la idea con OpenAI");
-    }
+    return { result: text };
+  } catch (error) {
+    throw new Error("Error generando la idea con OpenAI");
+  }
 });

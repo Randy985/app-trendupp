@@ -1,13 +1,13 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
     <application
-        android:label="trendup_app"
+        android:label="TrendUp Ideas"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <!-- ✅ Google Ads -->
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="ca-app-pub-3940256099942544~3347511713"/>
+            android:value="ca-app-pub-3268477465305430~1503036977"/>
         <!-- ✅ Facebook SDK -->
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"

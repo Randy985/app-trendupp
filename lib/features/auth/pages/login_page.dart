@@ -29,10 +29,10 @@ class _LoginPageState extends State<LoginPage> {
           ? await authService.loginWithEmail(email, pass)
           : await authService.registerWithEmail(email, pass);
       await firestoreService.saveUser(cred.user!);
-      if (mounted) {
-        Navigator.pushReplacementNamed(context, '/home');
-      }
+      if (!mounted) return;
+      Navigator.pushReplacementNamed(context, '/home');
     } catch (e) {
+      if (!mounted) return;
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(SnackBar(content: Text('Error: $e')));
@@ -42,19 +42,18 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Future<void> _loginWithGoogle() async {
+    final messenger = ScaffoldMessenger.of(context);
+
     setState(() => _loading = true);
     try {
       final userCred = await authService.signInWithGoogle();
       if (userCred != null) {
         await firestoreService.saveUser(userCred.user!);
-        if (mounted) {
-          Navigator.pushReplacementNamed(context, '/home');
-        }
+        if (!mounted) return;
+        Navigator.pushReplacementNamed(context, '/home');
       }
     } catch (e) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('Error: $e')));
+      messenger.showSnackBar(SnackBar(content: Text('Error: $e')));
     } finally {
       if (mounted) setState(() => _loading = false);
     }

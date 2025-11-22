@@ -27,17 +27,21 @@ class _GenerateViewState extends State<GenerateView> {
   }
 
   Future<void> _generateIdea(String topic) async {
+    final messenger = ScaffoldMessenger.of(context);
+
     try {
       final response = await FunctionsService().generateIdea(topic);
+      if (!mounted) return;
       setState(() {
         _idea = _parseIdea(response);
         _loading = false;
       });
     } catch (e) {
+      if (!mounted) return;
       setState(() => _loading = false);
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('Error generando idea: $e')));
+      messenger.showSnackBar(
+        SnackBar(content: Text('Error generando idea: $e')),
+      );
     }
   }
 
@@ -91,14 +95,42 @@ class _GenerateViewState extends State<GenerateView> {
         backgroundColor: Colors.transparent,
         elevation: 0,
         centerTitle: true,
-        title: Text(
-          'Idea para: $topic',
-          style: const TextStyle(
-            fontWeight: FontWeight.w600,
-            color: Colors.black87,
+        title: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(999),
+            boxShadow: const [
+              BoxShadow(
+                color: Colors.black12,
+                blurRadius: 8,
+                offset: Offset(0, 3),
+              ),
+            ],
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Icon(
+                Icons.bolt_rounded,
+                size: 20,
+                color: Colors.pinkAccent,
+              ),
+              const SizedBox(width: 8),
+              Text(
+                'Idea para: $topic',
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w800,
+                  color: Colors.black87,
+                  letterSpacing: 0.4,
+                ),
+              ),
+            ],
           ),
         ),
       ),
+
       body: AppBackground(
         child: _loading
             ? _buildLoading(size)
@@ -110,25 +142,28 @@ class _GenerateViewState extends State<GenerateView> {
   }
 
   Widget _buildLoading(Size size) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Lottie.asset(
-            'assets/lottie/loading_paperplane.json',
-            width: size.width * 0.80,
-          ),
-          const SizedBox(height: 28),
-          const Text(
-            "Generando idea con IA...",
-            style: TextStyle(
-              color: Colors.black87,
-              fontSize: 18,
-              fontWeight: FontWeight.w500,
-              letterSpacing: 0.4,
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 60),
+      child: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Lottie.asset(
+              'assets/lottie/loading_paperplane.json',
+              width: size.width * 0.80,
             ),
-          ),
-        ],
+            const SizedBox(height: 28),
+            const Text(
+              "Generando idea con IA...",
+              style: TextStyle(
+                color: Colors.black87,
+                fontSize: 18,
+                fontWeight: FontWeight.w500,
+                letterSpacing: 0.4,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -215,10 +250,13 @@ class _GenerateViewState extends State<GenerateView> {
                       const SnackBar(content: Text("Hashtags copiados")),
                     );
                   },
-                  child: const Icon(
-                    Icons.copy_rounded,
-                    size: 18,
-                    color: Colors.black54,
+                  child: Container(
+                    padding: const EdgeInsets.all(6),
+                    child: Icon(
+                      Icons.copy_rounded,
+                      size: 22,
+                      color: Colors.indigoAccent,
+                    ),
                   ),
                 ),
               ],
@@ -251,6 +289,7 @@ class _GenerateViewState extends State<GenerateView> {
           final topic =
               ModalRoute.of(context)?.settings.arguments as String? ??
               'Sin tema';
+          final messenger = ScaffoldMessenger.of(context);
           final firestore = FirestoreService();
 
           await firestore.saveIdea(
@@ -261,7 +300,8 @@ class _GenerateViewState extends State<GenerateView> {
             musica: _idea["musica"] ?? '',
           );
 
-          ScaffoldMessenger.of(context).showSnackBar(
+          if (!mounted) return;
+          messenger.showSnackBar(
             const SnackBar(content: Text('Idea guardada correctamente ✅')),
           );
         }, Colors.green),

@@ -35,17 +35,18 @@ class _OnboardingPageState extends State<OnboardingPage> {
     ),
   ];
 
-  void next() async {
+  Future<void> next() async {
     if (currentPage < slides.length - 1) {
       pageController.nextPage(
         duration: const Duration(milliseconds: 400),
         curve: Curves.easeInOut,
       );
     } else {
+      final navigator = Navigator.of(context);
+
       await controller.setSeen();
-      if (context.mounted) {
-        Navigator.pushReplacementNamed(context, '/login');
-      }
+      if (!mounted) return;
+      navigator.pushReplacementNamed('/login');
     }
   }
 

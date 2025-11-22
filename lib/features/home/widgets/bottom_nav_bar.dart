@@ -255,7 +255,11 @@ class _MinimalNavItem extends StatelessWidget {
             AnimatedContainer(
               duration: const Duration(milliseconds: 250),
               curve: Curves.easeInOutCubic,
-              transform: Matrix4.identity()..scale(isSelected ? 1.1 : 1.0),
+              transform: Matrix4.diagonal3Values(
+                isSelected ? 1.1 : 1.0,
+                isSelected ? 1.1 : 1.0,
+                1.0,
+              ),
               child: Icon(
                 icon,
                 size: 26,
