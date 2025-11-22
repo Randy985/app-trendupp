@@ -5,6 +5,7 @@ import '../../../services/firebase/functions_service.dart';
 import 'package:trendup_app/services/ads/ads_service.dart';
 import 'package:trendup_app/widgets/app_background.dart';
 import 'package:flutter/services.dart';
+import 'package:share_plus/share_plus.dart';
 
 class GenerateView extends StatefulWidget {
   const GenerateView({super.key});
@@ -16,6 +17,7 @@ class GenerateView extends StatefulWidget {
 class _GenerateViewState extends State<GenerateView> {
   bool _loading = true;
   Map<String, String> _idea = {};
+  bool _saved = false;
 
   @override
   void initState() {
@@ -79,6 +81,7 @@ class _GenerateViewState extends State<GenerateView> {
       setState(() {
         _loading = true;
         _idea.clear();
+        _saved = false;
       });
       _generateIdea(topic);
     }
@@ -117,13 +120,22 @@ class _GenerateViewState extends State<GenerateView> {
                 color: Colors.pinkAccent,
               ),
               const SizedBox(width: 8),
-              Text(
-                'Idea para: $topic',
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w800,
-                  color: Colors.black87,
-                  letterSpacing: 0.4,
+              SizedBox(
+                width: 180,
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  physics: const BouncingScrollPhysics(),
+                  child: Text(
+                    'Idea para: $topic',
+                    maxLines: 1,
+                    softWrap: false,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w800,
+                      color: Colors.black87,
+                      letterSpacing: 0.4,
+                    ),
+                  ),
                 ),
               ),
             ],
@@ -285,31 +297,125 @@ class _GenerateViewState extends State<GenerateView> {
           _newIdea();
         }, Colors.indigoAccent),
 
-        _actionButton(Icons.bookmark_border_rounded, "Guardar", () async {
-          final topic =
-              ModalRoute.of(context)?.settings.arguments as String? ??
-              'Sin tema';
-          final messenger = ScaffoldMessenger.of(context);
-          final firestore = FirestoreService();
+        _actionButton(
+          Icons.bookmark_border_rounded,
+          _saved ? "Guardado" : "Guardar",
+          () async {
+            if (_saved) return;
 
-          await firestore.saveIdea(
-            topic: topic,
-            idea: _idea["idea"] ?? '',
-            descripcion: _idea["descripcion"] ?? '',
-            hashtags: _idea["hashtags"] ?? '',
-            musica: _idea["musica"] ?? '',
-          );
+            final topic =
+                ModalRoute.of(context)?.settings.arguments as String? ??
+                'Sin tema';
+            final firestore = FirestoreService();
 
-          if (!mounted) return;
-          messenger.showSnackBar(
-            const SnackBar(content: Text('Idea guardada correctamente ✅')),
-          );
-        }, Colors.green),
+            await firestore.saveIdea(
+              topic: topic,
+              idea: _idea["idea"] ?? '',
+              descripcion: _idea["descripcion"] ?? '',
+              hashtags: _idea["hashtags"] ?? '',
+              musica: _idea["musica"] ?? '',
+            );
+
+            if (!mounted) return; // <-- evita usar context si el widget murió
+
+            setState(() => _saved = true);
+
+            showGeneralDialog(
+              // ignore: use_build_context_synchronously
+              context: context,
+              barrierDismissible: true,
+              barrierLabel: "alert",
+              barrierColor: Colors.black54.withValues(alpha: 0.4),
+              transitionDuration: const Duration(milliseconds: 240),
+              pageBuilder: (_, __, ___) => const SizedBox.shrink(),
+              transitionBuilder:
+                  (context, animation, secondaryAnimation, child) {
+                    final curved = CurvedAnimation(
+                      parent: animation,
+                      curve: Curves.easeOutBack,
+                    );
+
+                    return Transform.scale(
+                      scale: curved.value,
+                      child: Opacity(
+                        opacity: animation.value,
+                        child: Dialog(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: Container(
+                            padding: const EdgeInsets.all(24),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(
+                                  Icons.check_circle_rounded,
+                                  color: Colors.green,
+                                  size: 64,
+                                ),
+                                const SizedBox(height: 18),
+                                const Text(
+                                  "Idea guardada",
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black87,
+                                  ),
+                                ),
+                                const SizedBox(height: 6),
+                                const Text(
+                                  "Tu idea fue almacenada correctamente.",
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    fontSize: 15,
+                                    color: Colors.black54,
+                                  ),
+                                ),
+                                const SizedBox(height: 22),
+                                ElevatedButton(
+                                  onPressed: () => Navigator.of(context).pop(),
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: Colors.green,
+                                    foregroundColor: Colors.white,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 24,
+                                      vertical: 12,
+                                    ),
+                                  ),
+                                  child: const Text("OK"),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+            );
+          },
+          _saved ? Colors.grey : Colors.green,
+        ),
 
         _actionButton(Icons.share_rounded, "Compartir", () {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(const SnackBar(content: Text('Compartir idea')));
+          final ideaTexto =
+              '''
+Idea: ${_idea["idea"] ?? ""}
+
+Qué hacer:
+${_idea["descripcion"] ?? ""}
+
+Hashtags:
+${_idea["hashtags"] ?? ""}
+
+Música:
+${_idea["musica"] ?? ""}
+'''
+                  .trim();
+          // ignore: deprecated_member_use
+          Share.share(ideaTexto);
         }, Colors.pinkAccent),
       ],
     );
@@ -319,26 +425,41 @@ class _GenerateViewState extends State<GenerateView> {
     IconData icon,
     String label,
     VoidCallback onTap,
-    Color color,
-  ) {
+    Color color, {
+    Key? key,
+  }) {
     return Expanded(
+      key: key,
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 4),
-        child: ElevatedButton.icon(
+        child: ElevatedButton(
           onPressed: onTap,
-          icon: Icon(icon, size: 20),
-          label: Text(
-            label,
-            style: const TextStyle(fontWeight: FontWeight.w600),
-          ),
           style: ElevatedButton.styleFrom(
-            backgroundColor: color,
-            foregroundColor: Colors.white,
+            backgroundColor: Colors.white,
+            foregroundColor: color,
+            elevation: 1,
             padding: const EdgeInsets.symmetric(vertical: 12),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(12),
+              side: BorderSide(
+                color: color.withValues(alpha: 0.25),
+                width: 1.2,
+              ),
             ),
-            elevation: 2,
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(icon, size: 20),
+              const SizedBox(width: 6),
+              Text(
+                label,
+                style: const TextStyle(
+                  fontWeight: FontWeight.w600,
+                  fontSize: 15,
+                ),
+              ),
+            ],
           ),
         ),
       ),

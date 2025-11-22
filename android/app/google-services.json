@@ -58,6 +58,14 @@
           }
         },
         {
+          "client_id": "865332862927-ui1g17kkgoh57vdpd2klsnbbkdai14to.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.neositetech.trendup.trendup_app",
+            "certificate_hash": "d9745b3e059528548f14483b45ad511d6883021f"
+          }
+        },
+        {
           "client_id": "865332862927-p512aqbblr8r2g3n6ankolpt3hvcaa0r.apps.googleusercontent.com",
           "client_type": 3
         }

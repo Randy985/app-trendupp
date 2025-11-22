@@ -1,3 +1,6 @@
+import java.util.Properties
+import java.io.FileInputStream
+
 plugins {
     id("com.android.application")
     id("com.google.gms.google-services")
@@ -27,7 +30,6 @@ android {
         versionName = flutter.versionName
     }
 
-    // 🔥 FIRMA RELEASE AQUÍ 🔥
     signingConfigs {
         create("release") {
             val keystoreProperties = Properties()

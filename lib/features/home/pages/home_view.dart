@@ -97,10 +97,7 @@ class _HomeViewState extends State<HomeView>
                 constraints: BoxConstraints(minHeight: constraints.maxHeight),
                 child: IntrinsicHeight(
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 24,
-                      vertical: 30,
-                    ),
+                    padding: const EdgeInsets.fromLTRB(24, 30, 24, 10),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
@@ -122,7 +119,7 @@ class _HomeViewState extends State<HomeView>
                         _buildCategoryWrap(),
                         const Spacer(),
                         _buildGenerateButton(size),
-                        const SizedBox(height: 30),
+                        const SizedBox(height: 10),
                       ],
                     ),
                   ),
@@ -147,6 +144,14 @@ class _HomeViewState extends State<HomeView>
       child: TextField(
         controller: _topicCtrl,
         textAlignVertical: TextAlignVertical.center,
+        onChanged: (value) {
+          if (value.trim().isEmpty && _selectedCategory != null) {
+            setState(() {
+              _selectedCategory = null;
+            });
+          }
+        },
+
         decoration: InputDecoration(
           hintText: "Escribe tu tema o elige una categoría",
           hintStyle: const TextStyle(color: Colors.black45),
@@ -202,8 +207,8 @@ class _HomeViewState extends State<HomeView>
           checkmarkColor: Colors.grey[800],
 
           backgroundColor: Colors.white,
-          selectedColor: const Color(0xFFFFBE5D),
-          side: const BorderSide(color: Color(0xFFFFBE5D)),
+          selectedColor: const Color(0xFFFFC46D),
+          side: const BorderSide(color: Color(0xFFFFC46D)),
         );
       }).toList(),
     );

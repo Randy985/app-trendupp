@@ -68,14 +68,11 @@ class SavedView extends StatelessWidget {
                         color: Color(0xFF6A11CB),
                         size: 26,
                       ),
-                      title: Text(
-                        data['topic'] ?? 'Sin tema',
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: Color(0xFF333333),
-                        ),
-                        overflow: TextOverflow.ellipsis,
+                      title: SizedBox(
+                        height: 20,
+                        child: _AutoScrollText(data['topic'] ?? 'Sin tema'),
                       ),
+
                       trailing: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
@@ -236,6 +233,70 @@ class SavedView extends StatelessWidget {
       margin: const EdgeInsets.only(top: 6, bottom: 12),
       height: 1,
       color: Colors.black12,
+    );
+  }
+}
+
+class _AutoScrollText extends StatefulWidget {
+  final String text;
+  const _AutoScrollText(this.text);
+
+  @override
+  State<_AutoScrollText> createState() => _AutoScrollTextState();
+}
+
+class _AutoScrollTextState extends State<_AutoScrollText> {
+  final ScrollController _controller = ScrollController();
+  bool _forward = true;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) => _loop());
+  }
+
+  Future<void> _loop() async {
+    while (mounted) {
+      try {
+        if (_forward) {
+          await _controller.animateTo(
+            _controller.position.maxScrollExtent,
+            duration: const Duration(seconds: 12),
+            curve: Curves.linear,
+          );
+        } else {
+          await _controller.animateTo(
+            0,
+            duration: const Duration(seconds: 4),
+            curve: Curves.linear,
+          );
+        }
+        _forward = !_forward;
+        await Future.delayed(const Duration(milliseconds: 400));
+      } catch (_) {}
+    }
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      controller: _controller,
+      scrollDirection: Axis.horizontal,
+      physics: const BouncingScrollPhysics(),
+      child: Text(
+        widget.text,
+        style: const TextStyle(
+          fontWeight: FontWeight.bold,
+          color: Color(0xFF333333),
+        ),
+        softWrap: false,
+      ),
     );
   }
 }

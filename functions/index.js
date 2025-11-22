@@ -14,10 +14,11 @@ La idea debe sonar como algo que un amigo le diría a otro.
 Reglas:
 • Idea corta y directa.
 • Máximo 3-4 pasos fáciles.
-• Que sea divertida o sorprendente.
-• Que cualquier persona la pueda grabar en su casa.
+• Que sea divertida o sorprendente sin caer en humor “ridículo”.
+• Evita palabras como “ridículo”, “tonto”, “bobo”.
+• Que se pueda grabar fácilmente en cualquier lugar accesible (casa, calle, parque, donde sea).
 • Hashtags latinos actuales.
-• Música: solo describe el estilo, nada más.
+• Música: solo describe el estilo.
 
 Formato EXACTO:
 
